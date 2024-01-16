@@ -1,2 +1,2 @@
 # RestaurantRecEngine
-Recommending eatery locations by available real estate.
+Recommending new eatery locations for owners, utilizing available local real estate and machine learning.
