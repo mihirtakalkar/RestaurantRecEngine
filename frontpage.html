@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Prediction</title>
+</head>
+<body>
+
+<h1>Restaurant Prediction</h1>
+
+<form id="predictionForm">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" required>
+
+    <label for="street">Street:</label>
+    <input type="text" id="street" name="street" required>
+
+    <label for="city">City:</label>
+    <input type="text" id="city" name="city" required>
+
+    <label for="state">State:</label>
+    <input type="text" id="state" name="state" required>
+
+    <label for="zipCode">ZIP Code:</label>
+    <input type="text" id="zipCode" name="zipCode" required>
+
+    <label for="category">Select Category:</label>
+    <select id="category" name="category">
+        <option value="Bubble Tea">Bubble Tea</option>
+        <option value="Coffee & Tea">Coffee & Tea</option>
+        <option value="Bakeries">Bakeries</option>
+        <option value="Burgers">Burgers</option>
+        <option value="Fast Food">Fast Food</option>
+        <option value="Sandwiches">Sandwiches</option>
+        <option value="Pubs">Pubs</option>
+        <option value="Japanese">Japanese</option>
+        <option value="Italian">Italian</option>
+        <!-- Add more categories as needed -->
+    </select>
+
+    <button type="button" onclick="predict()">Predict</button>
+</form>
+
+<!-- Area to display predicted star count -->
+<div id="predictionResult">
+    <h2>Predicted Star Count:</h2>
+    <p id="starCountResult"></p>
+</div>
+
+<script>
+    function predict() {
+        // Retrieve values from the form
+        const NAME = document.getElementById("name").value;
+        const street = document.getElementById("street").value;
+        const city = document.getElementById("city").value;
+        const state = document.getElementById("state").value;
+        const zipCode = document.getElementById("zipCode").value;
+        const category = document.getElementById("category").value;
+
+        // Perform AJAX request to your FastAPI endpoint with the input values
+        // Adjust the URL accordingly based on your FastAPI deployment
+        fetch("http://localhost:8000/predict", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                name: `${NAME}`,
+                address: `${street}`,
+                city:  `${city}`,
+                state:  `${state}`, 
+                postal_code: `${zipCode}`,
+                categories: [category],  //List Form
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Display the predicted star count
+            const predictionResultElement = document.getElementById("starCountResult");
+            predictionResultElement.textContent = data.predicted_star_count;
+
+            // Show the prediction result area
+            const predictionResultArea = document.getElementById("predictionResult");
+            predictionResultArea.style.display = "block";
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            // Handle errors and provide user feedback
+        });
+    }
+</script>
+
+</body>
+</html>
